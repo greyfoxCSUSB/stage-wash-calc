@@ -32,23 +32,27 @@ with col_b:
       help="Distance from truss to the top of the stage",
   )
 
-# Standard Lens Degree to Field Multiplier mapping
+# Fixture and Lens options based on official chart values[cite: 2]
 LENS_MULTIPLIERS = {
-    "10° Lens (0.18)": 0.18,
-    "14° Lens (0.25)": 0.25,
-    "19° Lens (0.33)": 0.33,
-    "26° Lens (0.46)": 0.46,
-    "36° Lens (0.58)": 0.58,
-    "50° Lens (0.93)": 0.93,
-    "70° Lens (1.40)": 1.40,
-    "90° Lens (2.00)": 2.00,
+    "Source Four 5° (0.12)": 0.12,
+    "Source Four 10° (0.19)": 0.19,
+    "Source Four 19° (0.31)": 0.31,
+    "Source Four 26° (0.42)": 0.42,
+    "Source Four 36° (0.58)": 0.58,
+    "Source Four 50° (0.93)": 0.93,
+    "Source 4 PARNel @ 25 Focus (0.46)": 0.46,
+    "Source 4 PARNel @ 45 Focus (0.87)": 0.87,
+    "Source 4 EA PAR - Very Narrow Spot / VNSP (0.32)": 0.32,
+    "Source 4 EA PAR - Narrow Spot / NSP (0.33)": 0.33,
+    "Source 4 EA PAR - Medium Flood / MFL (0.57)": 0.57,
+    "Source 4 EA PAR - Wide Flood / WFL (0.89)": 0.89,
     "Other (Custom Multiplier)": None,
 }
 
 selected_lens = st.selectbox(
-    "Lens Tube Size / Degree",
+    "Luminaire / Lens Tube Size",
     options=list(LENS_MULTIPLIERS.keys()),
-    index=4,  # Defaults to 36° Lens (0.58)
+    index=4,  # Defaults to Source Four 36° (0.58)[cite: 2]
 )
 
 # Custom field multiplier fallback
@@ -63,19 +67,23 @@ if selected_lens == "Other (Custom Multiplier)":
 else:
   field_multiplier = LENS_MULTIPLIERS[selected_lens]
 
-# Reference table expander
-with st.expander("📊 Field Multiplier Reference Table"):
+# Reference table expander replicating the image chart[cite: 2]
+with st.expander("📊 Photometric Reference Table (Field & Beam Multipliers)"):
   st.markdown("""
-    | Lens Degree | Field Multiplier |
-    | :--- | :--- |
-    | **10°** | 0.18 |
-    | **14°** | 0.25 |
-    | **19°** | 0.33 |
-    | **26°** | 0.46 |
-    | **36°** | 0.58 |
-    | **50°** | 0.93 |
-    | **70°** | 1.40 |
-    | **90°** | 2.00 |
+    | Luminaire | Focus | Field Angle | Beam Angle | Field Multiplier | Beam Multiplier |
+    | :--- | :---: | :---: | :---: | :---: | :---: |
+    | **Source Four 5°** | — | 7° | 5° | **0.12** | 0.09 |
+    | **Source Four 10°** | — | 11° | 8° | **0.19** | 0.14 |
+    | **Source Four 19°** | — | 17° | 14° | **0.31** | 0.25 |
+    | **Source Four 26°** | — | 24° | 17° | **0.42** | 0.30 |
+    | **Source Four 36°** | — | 33° | 23° | **0.58** | 0.41 |
+    | **Source Four 50°** | — | 50° | 36° | **0.93** | 0.64 |
+    | **Source 4 PARNel** | 25 | 26° | 12° | **0.46** | 0.21 |
+    | **Source 4 PARNel** | 45 | 47° | 29° | **0.87** | 0.52 |
+    | **Source 4 EA PAR** | VNSP | 18° | 11° | **0.32** | 0.19 |
+    | **Source 4 EA PAR** | NSP | 19° | 11° | **0.33** | 0.19 |
+    | **Source 4 EA PAR** | MFL | 32° | 19° | **0.57** | 0.33 |
+    | **Source 4 EA PAR** | WFL | 48° | 27° | **0.89** | 0.47 |
     """)
 
 # ---------------------------------------------------------
@@ -88,7 +96,7 @@ overlap_pct = st.slider(
 st.caption("📌 **NOTE:** Overlap is typically **30%**.")
 
 # ---------------------------------------------------------
-# Math Calculations (PowerPoint Logic)
+# Math Calculations
 # ---------------------------------------------------------
 
 # 1. Field of Light Produced = Distance * Field Multiplier
